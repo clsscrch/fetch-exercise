@@ -1,35 +1,73 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react'
+import LoginPage from './Pages/LoginPage'
+import axios from 'axios';
+import SearchPage from './Pages/SearchPage';
 
 function App() {
-  const [count, setCount] = useState(0)
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+
+  // Check if auth token exists. If it does, render the search page. If not, render the login page.
+  useEffect(() => {
+    (async () => {
+      try {
+        await axios.get("https://frontend-take-home-service.fetch.com/dogs/search", {
+          headers: {
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          withCredentials: true
+        });
+
+        setIsLoggedIn(true);
+
+      } catch (err) {
+        // console.log(err);
+      }
+    })();
+  }, []);
+
+  const handleLogout = async () => {
+    await axios.post("https://frontend-take-home-service.fetch.com/auth/logout", {},
+      { withCredentials: true }
+    )
+    setIsLoggedIn(false);
+  }
+
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    await axios.post("https://frontend-take-home-service.fetch.com/auth/login", {
+      email: "a@a.com",
+      name: "a",
+    }, {
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      withCredentials: true
+    });
+
+    // await axios.post("https://frontend-take-home-service.fetch.com/auth/login", {
+    //   email: email,
+    //   name: name,props
+    // }, {
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //     "Access-Control-Allow-Origin": "*",
+    //   },
+    //   withCredentials: true
+    // })
+    setIsLoggedIn(true);
+  }
+
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="App">
+      {isLoggedIn ? <SearchPage handleLogout={handleLogout} /> : <LoginPage handleLogin={handleLogin}/>}
+    </div>
+  );
+
 }
 
 export default App
