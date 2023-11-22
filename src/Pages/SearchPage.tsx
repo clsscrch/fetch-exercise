@@ -1,7 +1,7 @@
 import axios from "axios"
 import "./SearchPage.css"
 import { useEffect, useState } from "react"
-import { Select } from "antd"
+import { Select, Pagination } from "antd"
 import Dog from "../Types/Dog"
 
 interface SearchPageProps {
@@ -11,6 +11,10 @@ interface SearchPageProps {
 const SearchPage = ({ handleLogout }: SearchPageProps) => {
     const [dogBreeds, setDogBreeds] = useState([]);
     const [dogs, setDogs] = useState([]);
+    const [selectedBreeds, setSelectedBreeds] = useState([]);
+    const [selectedSort, setSelectedSort] = useState("asc");
+    const [index, setIndex] = useState(1);
+    const [numResults, setNumResults] = useState(1);
 
     const getDogBreeds = async () => {
         const breeds = await axios.get("https://frontend-take-home-service.fetch.com/dogs/breeds",
@@ -30,17 +34,20 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
             }
         });
 
-        breedOptions.unshift({
-            label: "All",
-            value: "All"
-        });
-
         setDogBreeds(breedOptions);
     }
 
     const getDogs = async () => {
-        const searchResult = await axios.get<SearchResult>("https://frontend-take-home-service.fetch.com/dogs/search",
+
+        console.log(index);
+
+        const searchResult = await axios.get<SearchResult>(`https://frontend-take-home-service.fetch.com/dogs/search`,
             {
+                params: {
+                    breeds: selectedBreeds,
+                    sort: `breed:${selectedSort}`,
+                    from: (index - 1) * 25,
+                },
                 headers: {
                     "Content-Type": "application/json",
                     "Access-Control-Allow-Origin": "*",
@@ -49,6 +56,8 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
             }
         );
 
+        console.log(searchResult);
+        setNumResults(searchResult.data.total);
 
         const dogIds = searchResult.data.resultIds
 
@@ -63,18 +72,27 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
             }
         );
 
-        
         console.log(dogs);
         setDogs(dogs.data);
     }
 
+    const handlePageChange = async (page: number) => {
+        setIndex(page);
+    }
+
+    const handleSearch = () => {
+        setIndex(1);
+        
+    }
 
     useEffect(() => {
         getDogBreeds()
-        // console.log(getAllDogIDs());
         getDogs();
     }, [])
 
+    useEffect(() => {
+        getDogs();
+    }, [index]);
 
     return (
         <div>
@@ -87,10 +105,12 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
 
             {/* Search bar and stuff */}
             <h1>Search Page</h1>
-            <Select 
+            <Select
                 style={{ width: 240 }}
-                defaultValue={"All"}
                 options={dogBreeds}
+                onChange={(value) => setSelectedBreeds(value)}
+                mode="multiple"
+                allowClear={true}
             />
             <Select
                 style={{ width: 120 }}
@@ -105,8 +125,9 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
                         value: "desc"
                     }
                 ]}
+                onChange={(value) => setSelectedSort(value)}
             />
-            <button>Submit</button>
+            <button onClick={handleSearch}>Submit</button>
 
             <div id="dogsContainer">
                 {dogs.map((dog: Dog) => {
@@ -122,6 +143,8 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
                 })}
 
             </div>
+
+            <Pagination defaultCurrent={1} current={index} pageSize={25} total={numResults} onChange={handlePageChange} showSizeChanger={false}/>
         </div>
     )
 }
