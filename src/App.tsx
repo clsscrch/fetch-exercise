@@ -13,8 +13,7 @@ function App() {
       try {
         await axios.get("https://frontend-take-home-service.fetch.com/dogs/search", {
           headers: {
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*",
+            "Content-Type": "application/json"
           },
           withCredentials: true
         });
