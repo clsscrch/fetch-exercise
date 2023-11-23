@@ -21,7 +21,7 @@ function App() {
         setIsLoggedIn(true);
 
       } catch (err) {
-        // console.log(err);
+        
       }
     })();
   }, []);
@@ -33,37 +33,33 @@ function App() {
     setIsLoggedIn(false);
   }
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent, email:string, name: String) => {
     e.preventDefault();
 
-    await axios.post("https://frontend-take-home-service.fetch.com/auth/login", {
-      email: "a@a.com",
-      name: "a",
-    }, {
-      headers: {
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
+    try {
+      await axios.post("https://frontend-take-home-service.fetch.com/auth/login", {
+        email: email,
+        name: name,
       },
-      withCredentials: true
-    });
+        {
+          headers: {
+            "Content-Type": "application/json"
+          },
+          withCredentials: true
+        }
+      );
 
-    // await axios.post("https://frontend-take-home-service.fetch.com/auth/login", {
-    //   email: email,
-    //   name: name,props
-    // }, {
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     "Access-Control-Allow-Origin": "*",
-    //   },
-    //   withCredentials: true
-    // })
-    setIsLoggedIn(true);
+      setIsLoggedIn(true);
+    }  catch (err) {
+      alert("Error logging in. Please try again.")
+    }
   }
+
 
 
   return (
     <div className="App">
-      {isLoggedIn ? <SearchPage handleLogout={handleLogout} /> : <LoginPage handleLogin={handleLogin}/>}
+      {isLoggedIn ? <SearchPage handleLogout={handleLogout} /> : <LoginPage handleLogin={handleLogin} />}
     </div>
   );
 

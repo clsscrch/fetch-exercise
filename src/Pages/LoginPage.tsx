@@ -1,38 +1,22 @@
 import "./LoginPage.css"
-import React from "react"
-import axios from "axios"
+import React, { useState } from "react"
 
 interface LoginPageProps {
-    handleLogin: (e: React.FormEvent) => void
+    handleLogin: (e: React.FormEvent, email: string, name: string) => void
 }
 
-const LoginPage = ({handleLogin} : LoginPageProps) => {
+const LoginPage = ({ handleLogin }: LoginPageProps) => {
 
-    // const login =  async (e: React.FormEvent) => {
-    //     e.preventDefault()
-    //     console.log("Login")
-
-    //     const loginRequest = await axios.post("https://frontend-take-home-service.fetch.com/auth/login", {
-    //         email: "a@a.com",
-    //         name: "a",
-    //     }, {
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Access-Control-Allow-Origin": "*",
-    //         },
-    //         withCredentials: true
-    //     })
-        
-    //     console.log(loginRequest.data);
-    // }
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
 
     return (
         <div id="page">
             <div id="loginContainer">
                 <p>Login</p>
-                <form onSubmit={handleLogin}>
-                    <input type="text" placeholder="Username" />
-                    <input type="email" placeholder="E-mail" />
+                <form onSubmit={(e) => handleLogin(e, email, name)} className="loginForm">
+                    <input type="text" placeholder="Name" name="name" required onChange={(e) => setName(e.target.value)} />
+                    <input type="email" placeholder="E-mail" name="email" required onChange={(e) => setEmail(e.target.value)} />
                     <button type="submit">Login</button>
                 </form>
             </div>

@@ -5,10 +5,52 @@
     align-items: center;
 }
 
-#dogsContainer {
-    display: flex;
-    flex-wrap: wrap;
+#logo {
+    font-size: 24px;
 }
+
+.searcherContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+}
+
+.selectors {
+    display: flex;
+    gap: 20px;
+
+}
+
+#searchMain {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+
+}
+
+#dogsContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px;
+    padding: 10px 0px;
+}
+
+@media screen and (max-width: 1680px) {
+    #dogsContainer {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media screen and (max-width: 850px) {
+    #dogsContainer {
+        grid-template-columns: 1fr;
+    }
+}
+
 
 .dogComponent {
     display: flex;
@@ -21,15 +63,30 @@
     background-size: cover;
     background-position: center;
     position: relative;
-
+    overflow: hidden;
 }
 
+
 .doginfo {
-    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
     position: absolute;
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 10px;
     color: white;
+    padding: 10px;
+}
+
+.likeButton {
+    position: absolute;
+    background-color: white;
+    border: 1px solid black;
+    color: black;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 100%;
+    padding: 6px;
+    cursor: pointer;
+    right: 10px;
+    bottom: 25px;
 }
