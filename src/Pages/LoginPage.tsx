@@ -13,7 +13,7 @@ const LoginPage = ({ handleLogin }: LoginPageProps) => {
     return (
         <div id="page">
             <div id="loginContainer">
-                <p>Login</p>
+                <p>Login to Woof Finder</p>
                 <form onSubmit={(e) => handleLogin(e, email, name)} className="loginForm">
                     <input type="text" placeholder="Name" name="name" required onChange={(e) => setName(e.target.value)} />
                     <input type="email" placeholder="E-mail" name="email" required onChange={(e) => setEmail(e.target.value)} />

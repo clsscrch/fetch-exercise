@@ -222,15 +222,11 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
             </nav>
 
             {matchedDog ?
-                <div id="matchedDog">
-                    <div id="matchedDogContainer">
-                        <div id="matchedDogInfo">
-                            <h1>It's a match!</h1>
-                            <DogComponent dog={matchedDog} likedDogs={likedDogs} />
+                <div className="matchedDogContainer">
+                    <h1>It's a match!</h1>
+                    <DogComponent dog={matchedDog} likedDogs={likedDogs} />
 
-                            <button onClick={() => { setMatchedDog(undefined); }}>Close</button>
-                        </div>
-                    </div>
+                    <button onClick={() => { setMatchedDog(undefined) }}>Close</button>
                 </div>
                 :
                 <main id="searchMain">
@@ -255,26 +251,6 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
                         {dogs.map((dog: Dog) => {
                             return (
                                 <DogComponent dog={dog} likedDogs={likedDogs} toggleLike={toggleLike} key={dog.id} />
-
-                                // <div className="dogComponent" key={dog.id} style={{ backgroundImage: `url(${dog.img})` }}>
-                                //     <div className="doginfo">
-                                //         <h2>{dog.name}<span className="age">, {dog.age}</span></h2>
-                                //         <p>{dog.breed}</p>
-                                //         <p>{dog.zip_code}</p>
-                                //     </div>
-                                //     <button className="likeButton">
-                                //         {likedDogs.includes(dog.id) ?
-                                //             <HeartFilled style={{ fontSize: '28px', color: '#f54272' }} onClick={() => {
-                                //                 toggleLike(dog.id);
-                                //             }} />
-                                //             :
-                                //             <HeartOutlined style={{ fontSize: '28px' }} onClick={() => {
-                                //                 toggleLike(dog.id);
-                                //             }} />
-
-                                //         }
-                                //     </button>
-                                // </div>
                             )
                         })}
                     </div>

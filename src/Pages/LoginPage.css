@@ -30,15 +30,3 @@
     border-radius: 5px;
     border: 1px solid #ccc;
 }
-
-.loginForm button {
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    background-color: #ccc;
-    cursor: pointer;
-}
-
-.loginForm button:hover {
-    background-color: #ddd;
-}
