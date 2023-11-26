@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 
-button {
+.primaryButton {
   cursor: pointer;
   border: none;
   background-color: rgb(236, 191, 133);
@@ -10,6 +10,6 @@ button {
   border-radius: 5px;
 }
 
-button:hover {
+.primaryButton:hover {
   background-color: rgb(235, 197, 148);
 }

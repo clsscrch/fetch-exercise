@@ -54,7 +54,7 @@ const Searcher = ({ dogBreeds, setSelectedBreeds, setSelectedSort, handleSearch,
                 />
             </div>
             <div className="searcherButtons">
-                <button onClick={handleSearch}>Search</button>
+                <button className="primaryButton" onClick={handleSearch}>Search</button>
             </div>
             <Pagination defaultCurrent={1} current={index} pageSize={25} total={numResults} onChange={handlePageChange} showSizeChanger={false} />
 
@@ -217,7 +217,7 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
             <nav id="navbar">
                 <div id="logo">Woof Finder 🐶</div>
                 <div>
-                    <button onClick={handleLogout}>Logout</button>
+                    <button className="primaryButton" onClick={handleLogout}>Logout</button>
                 </div>
             </nav>
 
@@ -226,7 +226,7 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
                     <h1>It's a match!</h1>
                     <DogComponent dog={matchedDog} likedDogs={likedDogs} />
 
-                    <button onClick={() => { setMatchedDog(undefined) }}>Close</button>
+                    <button className="primaryButton" onClick={() => { setMatchedDog(undefined) }}>Close</button>
                 </div>
                 :
                 <main id="searchMain">
@@ -244,7 +244,7 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
                     />
 
                     <div>
-                        <button onClick={handleMatch} >Find My Furever Friend 🐶</button>
+                        <button onClick={handleMatch} className="primaryButton">Find My Furever Friend 🐶</button>
                     </div>
                     <div id="dogsContainer">
 
@@ -256,7 +256,7 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
                     </div>
 
                     <div>
-                        <button onClick={handleMatch} >Find My Furever Friend 🐶</button>
+                        <button onClick={handleMatch} className="primaryButton">Find My Furever Friend 🐶</button>
                     </div>
 
                     <Searcher

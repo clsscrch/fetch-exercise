@@ -17,7 +17,7 @@ const LoginPage = ({ handleLogin }: LoginPageProps) => {
                 <form onSubmit={(e) => handleLogin(e, email, name)} className="loginForm">
                     <input type="text" placeholder="Name" name="name" required onChange={(e) => setName(e.target.value)} />
                     <input type="email" placeholder="E-mail" name="email" required onChange={(e) => setEmail(e.target.value)} />
-                    <button type="submit">Login</button>
+                    <button className="primaryButton" type="submit">Login</button>
                 </form>
             </div>
         </div>
