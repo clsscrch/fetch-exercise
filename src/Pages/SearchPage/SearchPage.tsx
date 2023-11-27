@@ -2,22 +2,11 @@ import axios from "axios"
 import "./SearchPage.css"
 import { useEffect, useState } from "react"
 import { Select, Pagination } from "antd"
-import Dog from "../Types/Dog"
+import Dog from "../../Types/Dog"
 import { HeartFilled, HeartOutlined } from "@ant-design/icons"
-import { DefaultOptionType } from "antd/es/select"
 
 interface SearchPageProps {
     handleLogout: () => void
-}
-
-interface SearcherProps {
-    dogBreeds: DefaultOptionType[],
-    setSelectedBreeds: (value: string[]) => void,
-    setSelectedSort: (value: string) => void,
-    handleSearch: () => void,
-    index: number,
-    numResults: number,
-    handlePageChange: (page: number) => void,
 }
 
 interface DogComponentProps {
@@ -26,42 +15,7 @@ interface DogComponentProps {
     toggleLike?: (dogId: string) => void,
 }
 
-const Searcher = ({ dogBreeds, setSelectedBreeds, setSelectedSort, handleSearch, index, numResults, handlePageChange }: SearcherProps) => {
-    return (
-        <div className="searcherContainer">
-            <div className="selectors">
-                <Select
-                    style={{ width: 240 }}
-                    options={dogBreeds}
-                    onChange={(value) => setSelectedBreeds(value)}
-                    mode="multiple"
-                    allowClear={true}
-                />
-                <Select
-                    style={{ width: 120 }}
-                    defaultValue={"A-Z"}
-                    options={[
-                        {
-                            label: "A-Z",
-                            value: "asc"
-                        },
-                        {
-                            label: "Z-A",
-                            value: "desc"
-                        }
-                    ]}
-                    onChange={(value) => setSelectedSort(value)}
-                />
-            </div>
-            <div className="searcherButtons">
-                <button className="primaryButton" onClick={handleSearch}>Search</button>
-            </div>
-            <Pagination defaultCurrent={1} current={index} pageSize={25} total={numResults} onChange={handlePageChange} showSizeChanger={false} />
-
-        </div>
-    )
-
-}
+type Screen = "Search" | "Matched" | "Loading";
 
 const DogComponent = ({ dog, likedDogs, toggleLike }: DogComponentProps) => {
     return (
@@ -97,6 +51,16 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
     const [numResults, setNumResults] = useState(1);
     const [likedDogs, setLikedDogs] = useState<string[]>([]);
     const [matchedDog, setMatchedDog] = useState<Dog | undefined>();
+    const [screen, setScreen] = useState<Screen>("Search");
+
+    useEffect(() => {
+        getDogBreeds()
+        getDogs();
+    }, [])
+
+    useEffect(() => {
+        getDogs();
+    }, [index]);
 
     const getDogBreeds = async () => {
         const breeds = await axios.get("https://frontend-take-home-service.fetch.com/dogs/breeds",
@@ -121,6 +85,7 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
 
     const getDogs = async () => {
 
+        setScreen("Loading");
         const searchResult = await axios.get<SearchResult>(`https://frontend-take-home-service.fetch.com/dogs/search`,
             {
                 params: {
@@ -152,6 +117,8 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
         );
 
         setDogs(dogs.data);
+        setScreen("Search");
+
     }
 
     const handlePageChange = async (page: number) => {
@@ -201,16 +168,120 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
         );
 
         setMatchedDog(matchDog.data[0]);
+        setScreen("Matched");
     }
 
-    useEffect(() => {
-        getDogBreeds()
-        getDogs();
-    }, [])
+    const Searcher = () => {
+        return (
+            <div className="searcherContainer">
+                <div className="selectors">
+                    <Select
+                        style={{ width: 480 }}
+                        options={dogBreeds}
+                        onChange={(value) => {setSelectedBreeds(value)}}
+                        value={selectedBreeds}
+                        mode="multiple"
+                        allowClear={true}
+                    />
+                    <Select
+                        style={{ width: 120 }}
+                        defaultValue={"A-Z"}
+                        value={selectedSort}
+                        options={[
+                            {
+                                label: "A-Z",
+                                value: "asc"
+                            },
+                            {
+                                label: "Z-A",
+                                value: "desc"
+                            }
+                        ]}
+                        onChange={(value) => setSelectedSort(value)}
+                    />
+                </div>
+                <div className="searcherButtons">
+                    <button className="primaryButton" onClick={handleSearch}>Search</button>
+                </div>
+                <Pagination defaultCurrent={1} current={index} pageSize={25} total={numResults} onChange={handlePageChange} showSizeChanger={false} />
+    
+            </div>
+        )
+    
+    }
 
-    useEffect(() => {
-        getDogs();
-    }, [index]);
+    const SearchScreen = () => {
+        return (
+            <main id="searchMain">
+                <h1>🔎 Woof Search</h1>
+                <Searcher/>
+                <div>
+                    <button onClick={handleMatch} className="primaryButton">Find My Furever Friend 🐶</button>
+                </div>
+                <div id="dogsContainer">
+                    {dogs.map((dog: Dog) => {
+                        return (
+                            <DogComponent dog={dog} likedDogs={likedDogs} toggleLike={toggleLike} key={dog.id} />
+                        )
+                    })}
+                </div>
+
+                <div>
+                    <button onClick={handleMatch} className="primaryButton">Find My Furever Friend 🐶</button>
+                </div>
+                <Searcher/>
+            </main>
+        )
+    }
+
+    const MatchedScreen = () => {
+        return (
+            matchedDog ?
+                <div className="matchedDogContainer">
+                    <h1>🎉 You've got a match! 🎉</h1>
+                    <DogComponent dog={matchedDog} likedDogs={likedDogs} />
+                    <button
+                        className="primaryButton"
+                        onClick={() => {
+                            setMatchedDog(undefined)
+                            setScreen("Search");
+                        }}>
+                        Close
+                    </button>
+                </div>
+                :
+
+                <div className="matchedDogContainer">
+                    <h1>🎉 You've got a match! 🎉</h1>
+                    <p>Sorry, no matches found. Try again!</p>
+                    <button
+                        className="primaryButton"
+                        onClick={() => {
+                            setMatchedDog(undefined)
+                            setScreen("Search");
+                        }}>
+                        Close
+                    </button>
+                </div>
+        )
+    }
+
+    const LoadingScreen = () => {
+        return (
+            <div className="loading">Loading...</div>
+        )
+    }
+
+    const SearchScreens: Record<Screen, React.FC> = {
+        Search: SearchScreen,
+        Matched: MatchedScreen,
+        Loading: LoadingScreen
+    }
+
+    const Screen = ({ screen }: { screen: Screen }) => {
+        const Component = SearchScreens[screen];
+        return <Component />;
+    }
 
     return (
         <div>
@@ -220,58 +291,7 @@ const SearchPage = ({ handleLogout }: SearchPageProps) => {
                     <button className="primaryButton" onClick={handleLogout}>Logout</button>
                 </div>
             </nav>
-
-            {matchedDog ?
-                <div className="matchedDogContainer">
-                    <h1>It's a match!</h1>
-                    <DogComponent dog={matchedDog} likedDogs={likedDogs} />
-
-                    <button className="primaryButton" onClick={() => { setMatchedDog(undefined) }}>Close</button>
-                </div>
-                :
-                <main id="searchMain">
-                    <h1>🔎 Woof Search</h1>
-
-
-                    <Searcher
-                        dogBreeds={dogBreeds}
-                        setSelectedBreeds={setSelectedBreeds}
-                        setSelectedSort={setSelectedSort}
-                        handleSearch={handleSearch}
-                        index={index}
-                        numResults={numResults}
-                        handlePageChange={handlePageChange}
-                    />
-
-                    <div>
-                        <button onClick={handleMatch} className="primaryButton">Find My Furever Friend 🐶</button>
-                    </div>
-                    <div id="dogsContainer">
-
-                        {dogs.map((dog: Dog) => {
-                            return (
-                                <DogComponent dog={dog} likedDogs={likedDogs} toggleLike={toggleLike} key={dog.id} />
-                            )
-                        })}
-                    </div>
-
-                    <div>
-                        <button onClick={handleMatch} className="primaryButton">Find My Furever Friend 🐶</button>
-                    </div>
-
-                    <Searcher
-                        dogBreeds={dogBreeds}
-                        setSelectedBreeds={setSelectedBreeds}
-                        setSelectedSort={setSelectedSort}
-                        handleSearch={handleSearch}
-                        index={index}
-                        numResults={numResults}
-                        handlePageChange={handlePageChange}
-                    />
-                </main>
-
-            }
-
+            <Screen screen={screen} />
         </div>
     )
 }

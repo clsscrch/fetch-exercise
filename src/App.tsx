@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
-import LoginPage from './Pages/LoginPage'
+import LoginPage from './Pages/LoginPage/LoginPage'
 import axios from 'axios';
-import SearchPage from './Pages/SearchPage';
+import SearchPage from './Pages/SearchPage/SearchPage';
 import './App.css';
 
 function App() {

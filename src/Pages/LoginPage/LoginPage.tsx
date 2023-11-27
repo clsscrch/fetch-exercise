@@ -1,5 +1,6 @@
 import "./LoginPage.css"
 import React, { useState } from "react"
+import PixelBullTerrier from "../../assets/bullTerrier.png"
 
 interface LoginPageProps {
     handleLogin: (e: React.FormEvent, email: string, name: string) => void
@@ -13,7 +14,10 @@ const LoginPage = ({ handleLogin }: LoginPageProps) => {
     return (
         <div id="page">
             <div id="loginContainer">
-                <p>Login to Woof Finder</p>
+                <h2>Login to Woof Finder</h2>
+                <div>
+                    <img src={PixelBullTerrier} alt="Pixel art of a Bull Terrier" width={57} height={57} />
+                </div>
                 <form onSubmit={(e) => handleLogin(e, email, name)} className="loginForm">
                     <input type="text" placeholder="Name" name="name" required onChange={(e) => setName(e.target.value)} />
                     <input type="email" placeholder="E-mail" name="email" required onChange={(e) => setEmail(e.target.value)} />

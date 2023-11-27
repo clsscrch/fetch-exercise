@@ -1,5 +1,7 @@
 * {
   box-sizing: border-box;
+  margin: 0;
+  font-family: 'Nunito', sans-serif;
 }
 
 .primaryButton {
@@ -8,6 +10,7 @@
   background-color: rgb(236, 191, 133);
   padding: 10px;
   border-radius: 5px;
+  font-size: 16px;
 }
 
 .primaryButton:hover {
